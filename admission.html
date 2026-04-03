@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>College Admission Form</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body{
+            margin:0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right,#4facfe,#00f2fe);
+        }
+
+        .container{
+            max-width:700px;
+            background:white;
+            margin:30px auto;
+            padding:25px;
+            border-radius:10px;
+            box-shadow:0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        h2{
+            text-align:center;
+            margin-bottom:20px;
+        }
+
+        h3{
+            margin-top:20px;
+            border-bottom:2px solid #eee;
+            padding-bottom:5px;
+        }
+
+        label{
+            font-weight:bold;
+        }
+
+        input, select{
+            width:100%;
+            padding:8px;
+            margin:6px 0 12px 0;
+            border-radius:5px;
+            border:1px solid #ccc;
+        }
+
+        .row{
+            display:flex;
+            gap:10px;
+        }
+
+        .row div{
+            flex:1;
+        }
+
+        .buttons{
+            display:flex;
+            gap:10px;
+        }
+
+        button{
+            flex:1;
+            padding:10px;
+            border:none;
+            border-radius:5px;
+            color:white;
+            cursor:pointer;
+            font-size:15px;
+        }
+
+        .submit-btn{ background:#28a745; }
+        .clear-btn{ background:#ffc107; color:black; }
+        .back-btn{ background:#dc3545; }
+
+        button:hover{ opacity:0.9; }
+
+        @media(max-width:600px){
+            .row{
+                flex-direction:column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>Online College Admission Form</h2>
+
+<form onsubmit="return validateForm()">
+
+<!-- Personal Details -->
+<h3>Personal Details</h3>
+
+<label>Full Name</label>
+<input type="text" id="name">
+
+<label>Date of Birth</label>
+<input type="date" id="dob">
+
+<label>Gender</label>
+<select id="gender">
+    <option value="">Select Gender</option>
+    <option>Male</option>
+    <option>Female</option>
+    <option>Other</option>
+</select>
+
+<label>Select Caste</label>
+<select id="caste">
+    <option value="">Select Caste</option>
+    <option>OC</option>
+    <option>BC</option>
+    <option>MBC</option>
+    <option>SC</option>
+    <option>ST</option>
+</select>
+
+<!-- Contact Details -->
+<h3>Contact Details</h3>
+
+<label>Email ID</label>
+<input type="email" id="email">
+
+<label>Phone Number</label>
+<input type="number" id="phone">
+
+<!-- Academic Details -->
+<h3>Academic Details</h3>
+
+<label>Select Course</label>
+<select id="course">
+    <option value="">Select Course</option>
+    <option>B.Sc Computer Science</option>
+    <option>BCA</option>
+    <option>B.Com</option>
+    <option>BBA</option>
+    <option>BA English</option>
+</select>
+
+<label>12th Passed Out Year</label>
+<input type="number" id="year" placeholder="Example: 2024">
+
+<h3>12th Subject Marks</h3>
+
+<div class="row">
+    <div>
+        <label>Physics</label>
+        <input type="number" id="physics">
+    </div>
+    <div>
+        <label>Chemistry</label>
+        <input type="number" id="chemistry">
+    </div>
+</div>
+
+<div class="row">
+    <div>
+        <label>Computer Science</label>
+        <input type="number" id="cs">
+    </div>
+    <div>
+        <label>Mathematics</label>
+        <input type="number" id="maths">
+    </div>
+</div>
+
+<!-- Buttons -->
+<div class="buttons">
+    <button type="submit" class="submit-btn">Submit</button>
+    <button type="reset" class="clear-btn">Clear</button>
+    <button type="button" class="back-btn" onclick="goBack()">Back</button>
+</div>
+
+</form>
+</div>
+
+<script>
+
+function validateForm(){
+
+    let fields = ["name","dob","gender","caste","email","phone","course","year","physics","chemistry","cs","maths"];
+
+    for(let i=0;i<fields.length;i++){
+        if(document.getElementById(fields[i]).value==""){
+            alert("Please fill all fields!");
+            return false;
+        }
+    }
+
+    alert("Application Submitted Successfully!");
+    return true;
+}
+
+function goBack(){
+    window.location="dashboard.html";
+}
+
+</script>
+
+</body>
+</html>

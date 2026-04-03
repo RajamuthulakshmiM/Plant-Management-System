@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Admin - Users</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:
+    linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)),
+    url("https://images.unsplash.com/photo-1446071103084-c257b5f70672");
+  background-size:cover;
+  background-position:center;
+}
+
+/* Sidebar */
+.sidebar{
+  width:220px;
+  height:100vh;
+  background:#2e7d32;
+  position:fixed;
+  color:white;
+}
+.sidebar h2{
+  text-align:center;
+  padding:15px;
+  margin:0;
+  border-bottom:1px solid #fff;
+}
+.sidebar a{
+  display:block;
+  padding:15px;
+  color:white;
+  text-decoration:none;
+}
+.sidebar a:hover{
+  background:#1b5e20;
+}
+
+/* Main */
+.main{
+  margin-left:220px;
+  padding:20px;
+  background:rgba(255,255,255,0.95);
+  min-height:100vh;
+}
+
+h1{
+  color:#2e7d32;
+}
+
+/* Table */
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:20px;
+}
+th,td{
+  border:1px solid #ccc;
+  padding:10px;
+  text-align:center;
+}
+th{
+  background:#2e7d32;
+  color:white;
+}
+button{
+  padding:6px 12px;
+  background:#c62828;
+  color:white;
+  border:none;
+  border-radius:5px;
+  cursor:pointer;
+}
+button:hover{
+  background:#b71c1c;
+}
+</style>
+</head>
+
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+  <h2>Admin Panel</h2>
+  <a href="admin dashboard.html">🏠 Dashboard</a>
+  <a href="manage plants.html">🌱 Manage Plants</a>
+  <a href="stock.html">📦 Stock</a>
+  <a href="orders.html">🧾 Orders</a>
+  <a href="users.html">👤 Users</a>
+  <a href="reports.html">📊 Reports</a>
+  <a href="admin login.html">🚪 Logout</a>
+</div>
+
+<!-- Main -->
+<div class="main">
+  <h1>Registered Users</h1>
+
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="userTable"></tbody>
+  </table>
+</div>
+
+<script>
+let users = JSON.parse(localStorage.getItem("users")) || [];
+
+function loadUsers(){
+  let table = document.getElementById("userTable");
+  table.innerHTML = "";
+
+  if(users.length === 0){
+    table.innerHTML = "<tr><td colspan='4'>No users found</td></tr>";
+    return;
+  }
+
+  users.forEach((u,index)=>{
+    let row = `
+      <tr>
+        <td>${u.id}</td>
+        <td>${u.name}</td>
+        <td>${u.email}</td>
+        <td>
+          <button onclick="deleteUser(${index})">Delete</button>
+        </td>
+      </tr>
+    `;
+    table.innerHTML += row;
+  });
+}
+
+function deleteUser(index){
+  if(confirm("Are you sure to delete this user?")){
+    users.splice(index,1);
+    localStorage.setItem("users", JSON.stringify(users));
+    loadUsers();
+    alert("User deleted successfully ✅");
+  }
+}
+
+loadUsers();
+</script>
+
+</body>
+</html>

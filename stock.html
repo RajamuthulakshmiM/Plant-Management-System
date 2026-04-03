@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Stock Management</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+/* ===== BACKGROUND ===== */
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:
+    linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)),
+    url("https://images.unsplash.com/photo-1501004318641-b39e6451bec6");
+  background-size:cover;
+  background-position:center;
+  background-attachment:fixed;
+}
+
+/* ===== CONTAINER ===== */
+.container{
+  max-width:1000px;
+  margin:30px auto;
+  background:rgba(255,255,255,0.95);
+  padding:20px;
+  border-radius:10px;
+}
+
+h2{
+  text-align:center;
+  color:#2e7d32;
+}
+
+/* ===== TABLE ===== */
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:20px;
+}
+th, td{
+  border:1px solid #ccc;
+  padding:10px;
+  text-align:center;
+}
+th{
+  background:#2e7d32;
+  color:white;
+}
+
+input{
+  width:80px;
+  padding:5px;
+}
+
+button{
+  padding:6px 10px;
+  background:#2e7d32;
+  color:white;
+  border:none;
+  cursor:pointer;
+  border-radius:5px;
+}
+button:hover{
+  background:#1b5e20;
+}
+
+.low{
+  color:red;
+  font-weight:bold;
+}
+.back{
+  background:#555;
+  margin-top:15px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h2>📦 Stock Management</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Plant Name</th>
+        <th>Category</th>
+        <th>Available Stock</th>
+        <th>Update Stock</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody id="stockTable"></tbody>
+  </table>
+
+  <button class="back" onclick="location.href='admin dashboard.html'">
+    ⬅ Back to Dashboard
+  </button>
+</div>
+
+<script>
+let plants = JSON.parse(localStorage.getItem("plants")) || [];
+let table = document.getElementById("stockTable");
+
+function loadStock(){
+  table.innerHTML = "";
+
+  if(plants.length === 0){
+    table.innerHTML = "<tr><td colspan='5'>No plants found</td></tr>";
+    return;
+  }
+
+  plants.forEach((p, i) => {
+    let status = p.stock <= 5 ? "<span class='low'>Low Stock</span>" : "Available";
+
+    table.innerHTML += `
+      <tr>
+        <td>${p.name}</td>
+        <td>${p.category}</td>
+        <td>${p.stock}</td>
+        <td>
+          <input type="number" id="newStock${i}" value="${p.stock}">
+          <button onclick="updateStock(${i})">Update</button>
+        </td>
+        <td>${status}</td>
+      </tr>
+    `;
+  });
+}
+
+function updateStock(index){
+  let newStock = document.getElementById("newStock"+index).value;
+
+  if(newStock === "" || newStock < 0){
+    alert("Enter valid stock");
+    return;
+  }
+
+  plants[index].stock = Number(newStock);
+  localStorage.setItem("plants", JSON.stringify(plants));
+  alert("Stock updated successfully ✅");
+  loadStock();
+}
+
+loadStock();
+</script>
+
+</body>
+</html>

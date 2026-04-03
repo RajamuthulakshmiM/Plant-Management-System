@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>User Dashboard - Plant Store</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:
+    linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)),
+    url("https://images.unsplash.com/photo-1466692476868-aef1dfb1e735");
+  background-size:cover;
+  background-position:center;
+  background-attachment:fixed;
+}
+
+/* SIDEBAR */
+.sidebar{
+  width:220px;
+  height:100vh;
+  background:#2e7d32;
+  position:fixed;
+  color:white;
+}
+.sidebar h2{
+  text-align:center;
+  padding:15px;
+  margin:0;
+  border-bottom:1px solid #fff;
+}
+.sidebar a{
+  display:block;
+  padding:15px;
+  color:white;
+  text-decoration:none;
+}
+.sidebar a:hover{
+  background:#1b5e20;
+}
+
+/* MAIN */
+.main{
+  margin-left:220px;
+  padding:20px;
+  min-height:100vh;
+  background:rgba(255,255,255,0.95);
+}
+
+/* SEARCH */
+.search-box{
+  width:100%;
+  padding:10px;
+  margin:10px 0;
+  font-size:16px;
+}
+
+/* PLANTS GRID */
+.plants{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+  gap:20px;
+  margin-top:20px;
+}
+
+.plant-card{
+  background:white;
+  border-radius:10px;
+  box-shadow:0 5px 15px rgba(0,0,0,0.2);
+  overflow:hidden;
+  text-align:center;
+  transition:0.3s;
+  padding-bottom:10px;
+}
+
+.plant-card:hover{
+  transform:scale(1.05);
+}
+
+.plant-card img{
+  width:100%;
+  height:180px;
+  object-fit:cover;
+}
+
+.plant-card h3{
+  margin:10px 0;
+  color:#2e7d32;
+}
+
+.plant-card p{
+  margin:5px 0;
+}
+
+.plant-card input{
+  width:60px;
+  padding:5px;
+  text-align:center;
+}
+
+.plant-card button{
+  margin-top:8px;
+  padding:8px 12px;
+  background:#2e7d32;
+  color:white;
+  border:none;
+  border-radius:5px;
+  cursor:pointer;
+}
+
+.plant-card button:hover{
+  background:#1b5e20;
+}
+
+.out-stock{
+  color:red;
+  font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="sidebar">
+  <h2>User Panel</h2>
+  <a href="index.html">🏠 Home</a>
+  <a href="my orders.html">🧾 My Orders</a>
+  <a href="cart.html">🛒 Cart</a>
+  <a href="login.html">🚪 Logout</a>
+</div>
+
+<div class="main">
+  <h1>Welcome User 👋</h1>
+  <p>Buy your favourite plants 🌱</p>
+
+  <input type="text" class="search-box" id="search"
+         placeholder="Search plants..."
+         onkeyup="searchPlant()">
+
+  <div class="plants" id="plantList"></div>
+</div>
+
+<script>
+
+let plants = JSON.parse(localStorage.getItem("plants")) || [];
+let plantList = document.getElementById("plantList");
+
+function loadPlants(data = plants){
+
+  if(data.length === 0){
+    plantList.innerHTML = "<p>No plants available</p>";
+    return;
+  }
+
+  plantList.innerHTML = "";
+
+  data.forEach((p, i) => {
+
+    let stockText = p.stock > 0
+        ? `<p>Stock : ${p.stock}</p>`
+        : `<p class="out-stock">Out of Stock</p>`;
+
+    let button = p.stock > 0
+        ? `<input type="number" min="1" max="${p.stock}" value="1" id="qty${i}">
+           <br>
+           <button onclick="addToCart(${i})">Add to Cart</button>`
+        : `<button disabled>Not Available</button>`;
+
+    plantList.innerHTML += `
+      <div class="plant-card">
+        <img src="${p.image}">
+        <h3>${p.name}</h3>
+        <p>Category : ${p.category}</p>
+        <p>Price : ₹${p.price}</p>
+        ${stockText}
+        ${button}
+      </div>
+    `;
+  });
+}
+
+function addToCart(index){
+
+  let qtyInput = document.getElementById("qty"+index);
+  let quantity = parseInt(qtyInput.value);
+
+  if(quantity > plants[index].stock){
+    alert("Not enough stock ❌");
+    return;
+  }
+
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+  let item = {
+    name: plants[index].name,
+    price: plants[index].price,
+    image: plants[index].image,
+    quantity: quantity,
+    total: plants[index].price * quantity
+  };
+
+  cart.push(item);
+
+  plants[index].stock -= quantity;
+
+  localStorage.setItem("cart", JSON.stringify(cart));
+  localStorage.setItem("plants", JSON.stringify(plants));
+
+  alert("Added to cart 🌱");
+
+  loadPlants();
+}
+
+function searchPlant(){
+  let value = document.getElementById("search").value.toLowerCase();
+  let filtered = plants.filter(p =>
+      p.name.toLowerCase().includes(value) ||
+      p.category.toLowerCase().includes(value)
+  );
+  loadPlants(filtered);
+}
+
+loadPlants();
+
+</script>
+
+</body>
+</html>

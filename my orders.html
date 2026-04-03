@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>My Orders - Plant Store</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+
+body{
+margin:0;
+font-family:Arial;
+background:
+linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)),
+url("home.jpeg");
+background-size:cover;
+background-position:center;
+background-attachment:fixed;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+width:220px;
+height:100vh;
+background:#2e7d32;
+position:fixed;
+color:white;
+}
+
+.sidebar h2{
+text-align:center;
+padding:15px;
+margin:0;
+border-bottom:1px solid #fff;
+}
+
+.sidebar a{
+display:block;
+padding:15px;
+color:white;
+text-decoration:none;
+}
+
+.sidebar a:hover{
+background:#1b5e20;
+}
+
+/* MAIN */
+
+.main{
+margin-left:220px;
+padding:20px;
+min-height:100vh;
+background:rgba(255,255,255,0.95);
+}
+
+h1{
+color:#2e7d32;
+}
+
+/* TABLE */
+
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:20px;
+}
+
+th,td{
+border:1px solid #ccc;
+padding:10px;
+text-align:center;
+}
+
+th{
+background:#2e7d32;
+color:white;
+}
+
+/* IMAGE */
+
+.plantimg{
+width:60px;
+height:60px;
+border-radius:8px;
+object-fit:cover;
+cursor:pointer;
+}
+
+/* STATUS */
+
+.pending{color:orange;font-weight:bold;}
+.shipped{color:#1976d2;font-weight:bold;}
+.delivered{color:green;font-weight:bold;}
+.cancelled{color:red;font-weight:bold;}
+
+/* BUTTON */
+
+.cancelBtn{
+background:#d32f2f;
+color:white;
+border:none;
+padding:6px 10px;
+border-radius:5px;
+cursor:pointer;
+}
+
+.back{
+margin-top:15px;
+padding:8px 12px;
+background:#555;
+color:white;
+border:none;
+cursor:pointer;
+}
+
+/* IMAGE PREVIEW */
+
+.previewBox{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.8);
+display:none;
+justify-content:center;
+align-items:center;
+}
+
+.previewBox img{
+width:300px;
+border-radius:10px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="sidebar">
+<h2>User Panel</h2>
+<a href="user dashboard.html">🏠 Home</a>
+<a href="cart.html">🛒 Cart</a>
+<a href="my orders.html">🧾 My Orders</a>
+<a href="login.html">🚪 Logout</a>
+</div>
+
+<div class="main">
+
+<h1>🧾 My Orders</h1>
+
+<table>
+
+<thead>
+<tr>
+<th>Order ID</th>
+<th>Customer Name</th>
+<th>Plant Image</th>
+<th>Plant Name</th>
+<th>Quantity</th>
+<th>Total ₹</th>
+<th>Status</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<tbody id="orderTable"></tbody>
+
+</table>
+
+<button class="back" onclick="location.href='user dashboard.html'">⬅ Back</button>
+
+</div>
+
+<!-- IMAGE PREVIEW -->
+
+<div class="previewBox" id="previewBox" onclick="closePreview()">
+<img id="bigImg">
+</div>
+
+<script>
+
+let orders=JSON.parse(localStorage.getItem("orders"))||[];
+let table=document.getElementById("orderTable");
+
+function loadOrders(){
+
+table.innerHTML="";
+
+if(orders.length===0){
+table.innerHTML="<tr><td colspan='8'>No orders found</td></tr>";
+return;
+}
+
+orders.forEach((o,i)=>{
+
+let statusClass="pending";
+
+if(o.status==="Shipped") statusClass="shipped";
+if(o.status==="Delivered") statusClass="delivered";
+if(o.status==="Cancelled") statusClass="cancelled";
+
+table.innerHTML+=`
+
+<tr>
+
+<td>ORD${i+1}</td>
+
+<td>${o.user}</td>
+
+<td>
+<img src="${o.image}" class="plantimg"
+onclick="previewImage('${o.image}')">
+</td>
+
+<td>${o.name}</td>
+
+<td>${o.qty}</td>
+
+<td>${o.total}</td>
+
+<td class="${statusClass}">
+${o.status}
+</td>
+
+<td>
+
+${o.status==="Pending" ? 
+`<button class="cancelBtn" onclick="cancelOrder(${i})">Cancel</button>` 
+: "-"}
+
+</td>
+
+</tr>
+
+`;
+
+});
+
+}
+
+function cancelOrder(i){
+
+orders[i].status="Cancelled";
+
+localStorage.setItem("orders",JSON.stringify(orders));
+
+loadOrders();
+
+}
+
+/* IMAGE PREVIEW */
+
+function previewImage(src){
+
+document.getElementById("previewBox").style.display="flex";
+document.getElementById("bigImg").src=src;
+
+}
+
+function closePreview(){
+
+document.getElementById("previewBox").style.display="none";
+
+}
+
+loadOrders();
+
+</script>
+
+</body>
+</html>

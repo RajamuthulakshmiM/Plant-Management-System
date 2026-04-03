@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>User Registration - Plant Store</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:
+    linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
+    url("r.jpeg");
+  background-size:cover;
+  background-position:center;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.form-box{
+  background:rgba(255,255,255,0.95);
+  padding:25px;
+  width:320px;
+  border-radius:12px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.3);
+}
+
+.form-box h2{
+  text-align:center;
+  margin-bottom:20px;
+  color:#2e7d32;
+}
+
+input{
+  width:100%;
+  padding:10px;
+  margin:8px 0;
+  border-radius:6px;
+  border:1px solid #ccc;
+  font-size:15px;
+}
+
+button{
+  width:100%;
+  padding:10px;
+  background:#2e7d32;
+  color:white;
+  border:none;
+  border-radius:6px;
+  font-size:16px;
+  cursor:pointer;
+}
+button:hover{
+  background:#1b5e20;
+}
+
+p{
+  text-align:center;
+  margin-top:15px;
+}
+a{
+  color:#2e7d32;
+  text-decoration:none;
+  font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="form-box">
+  <h2>User Register 🌱</h2>
+
+  <input type="text" id="name" placeholder="Full Name">
+  <input type="email" id="email" placeholder="Email">
+  <input type="password" id="password" placeholder="Password">
+  <input type="password" id="confirm" placeholder="Confirm Password">
+
+  <button onclick="register()">Register</button>
+
+  <p>Already have an account?
+    <a href="login.html">Login</a>
+  </p>
+</div>
+
+<script>
+function register(){
+  let name = document.getElementById("name").value;
+  let email = document.getElementById("email").value;
+  let password = document.getElementById("password").value;
+  let confirm = document.getElementById("confirm").value;
+
+  if(name==="" || email==="" || password==="" || confirm===""){
+    alert("All fields are required ❗");
+    return;
+  }
+
+  if(password !== confirm){
+    alert("Password mismatch ❌");
+    return;
+  }
+
+  let users = JSON.parse(localStorage.getItem("users")) || [];
+
+  let exists = users.find(u => u.email === email);
+  if(exists){
+    alert("Email already registered ❗");
+    return;
+  }
+
+  let user = {
+    id: Date.now(),
+    name: name,
+    email: email,
+    password: password
+  };
+
+  users.push(user);
+  localStorage.setItem("users", JSON.stringify(users));
+
+  alert("Registration successful ✅");
+  window.location.href = "login.html";
+}
+</script>
+
+</body>
+</html>

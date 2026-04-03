@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Admin Orders - Plant Store</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+
+body{
+margin:0;
+font-family:Arial;
+background:#f4fff4;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+width:220px;
+height:100vh;
+background:#1b5e20;
+position:fixed;
+color:white;
+}
+
+.sidebar h2{
+text-align:center;
+padding:15px;
+margin:0;
+border-bottom:1px solid white;
+}
+
+.sidebar a{
+display:block;
+padding:15px;
+color:white;
+text-decoration:none;
+}
+
+.sidebar a:hover{
+background:#2e7d32;
+}
+
+/* MAIN */
+
+.main{
+margin-left:220px;
+padding:20px;
+}
+
+h1{
+color:#2e7d32;
+}
+
+.searchbox{
+padding:8px;
+width:250px;
+margin-top:10px;
+}
+
+/* TABLE */
+
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:20px;
+background:white;
+}
+
+th,td{
+border:1px solid #ccc;
+padding:10px;
+text-align:center;
+}
+
+th{
+background:#2e7d32;
+color:white;
+}
+
+/* IMAGE */
+
+.plantimg{
+width:60px;
+height:60px;
+object-fit:cover;
+border-radius:8px;
+}
+
+/* BUTTON */
+
+.deletebtn{
+background:red;
+color:white;
+border:none;
+padding:6px 10px;
+cursor:pointer;
+border-radius:5px;
+}
+
+.deletebtn:hover{
+background:darkred;
+}
+
+.deliverbtn{
+background:green;
+color:white;
+border:none;
+padding:6px 10px;
+border-radius:5px;
+cursor:pointer;
+}
+
+.cancelbtn{
+background:orange;
+color:white;
+border:none;
+padding:6px 10px;
+border-radius:5px;
+cursor:pointer;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="sidebar">
+
+<h2>Admin Panel</h2>
+
+<a href="admin dashboard.html">🏠 Dashboard</a>
+<a href="orders.html">📦 Orders</a>
+<a href="manage plants.html">🌿 Manage Plants</a>
+<a href="admin login.html">🚪 Logout</a>
+
+</div>
+
+<div class="main">
+
+<h1>📦 Customer Orders</h1>
+
+<h3>Total Orders : <span id="totalOrders">0</span></h3>
+
+<input type="text" id="search" class="searchbox" placeholder="Search Customer..." onkeyup="searchOrders()">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Order ID</th>
+<th>Customer Name</th>
+<th>Plant Image</th>
+<th>Plant Name</th>
+<th>Qty</th>
+<th>Total ₹</th>
+<th>Status</th>
+<th>Delete</th>
+
+</tr>
+
+</thead>
+
+<tbody id="orderTable"></tbody>
+
+</table>
+
+</div>
+
+<script>
+
+let orders = JSON.parse(localStorage.getItem("orders")) || [];
+
+let table = document.getElementById("orderTable");
+
+document.getElementById("totalOrders").innerText = orders.length;
+
+function loadOrders(data = orders){
+
+table.innerHTML="";
+
+if(data.length===0){
+
+table.innerHTML="<tr><td colspan='8'>No orders found</td></tr>";
+return;
+
+}
+
+data.forEach((o,i)=>{
+
+table.innerHTML+=`
+
+<tr>
+
+<td>ORD${i+1}</td>
+
+<td>${o.user ? o.user : "Customer"}</td>
+
+<td>
+<img src="${o.image}" class="plantimg">
+</td>
+
+<td>${o.name}</td>
+
+<td>${o.qty}</td>
+
+<td>${o.total}</td>
+
+<td>
+
+${o.status==="Delivered"
+? "<span style='color:green;font-weight:bold'>Delivered</span>"
+: o.status==="Cancelled"
+? "<span style='color:red;font-weight:bold'>Cancelled</span>"
+: `
+<button class="deliverbtn" onclick="deliverOrder(${i})">Delivered</button>
+<button class="cancelbtn" onclick="cancelOrder(${i})">Cancel</button>
+`
+}
+
+</td>
+
+<td>
+<button class="deletebtn" onclick="deleteOrder(${i})">Delete</button>
+</td>
+
+</tr>
+
+`;
+
+});
+
+}
+
+function deliverOrder(i){
+
+orders[i].status="Delivered";
+
+localStorage.setItem("orders",JSON.stringify(orders));
+
+loadOrders();
+
+}
+
+function cancelOrder(i){
+
+orders[i].status="Cancelled";
+
+localStorage.setItem("orders",JSON.stringify(orders));
+
+loadOrders();
+
+}
+
+function deleteOrder(i){
+
+if(confirm("Delete this order?")){
+
+orders.splice(i,1);
+
+localStorage.setItem("orders",JSON.stringify(orders));
+
+loadOrders();
+
+document.getElementById("totalOrders").innerText = orders.length;
+
+}
+
+}
+
+function searchOrders(){
+
+let value=document.getElementById("search").value.toLowerCase();
+
+let filtered=orders.filter(o=>{
+
+return (o.user && o.user.toLowerCase().includes(value));
+
+});
+
+loadOrders(filtered);
+
+}
+
+loadOrders();
+
+</script>
+
+</body>
+</html>

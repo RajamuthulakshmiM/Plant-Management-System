@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Admin Dashboard - Plant Store</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+/* ===== BODY BACKGROUND ===== */
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:
+    linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)),
+    url("home.jpeg");
+  background-size:cover;
+  background-position:center;
+  background-attachment:fixed;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar{
+  width:220px;
+  height:100vh;
+  background:#2e7d32;
+  position:fixed;
+  color:white;
+}
+.sidebar h2{
+  text-align:center;
+  padding:15px;
+  margin:0;
+  border-bottom:1px solid #fff;
+}
+.sidebar a{
+  display:block;
+  padding:15px;
+  color:white;
+  text-decoration:none;
+  font-size:16px;
+}
+.sidebar a:hover{
+  background:#1b5e20;
+}
+
+/* ===== MAIN CONTENT ===== */
+.main{
+  margin-left:220px;
+  padding:20px;
+  min-height:100vh;
+  background:rgba(255,255,255,0.9);
+}
+
+/* ===== CARDS ===== */
+.cards{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:20px;
+  margin-top:20px;
+}
+.card{
+  background:white;
+  padding:25px;
+  border-radius:10px;
+  box-shadow:0 5px 15px rgba(0,0,0,0.2);
+  font-size:18px;
+  text-align:center;
+}
+.card span{
+  font-size:26px;
+  font-weight:bold;
+  color:#2e7d32;
+}
+</style>
+</head>
+
+<body>
+
+<!-- ===== SIDEBAR ===== --><div class="sidebar">
+  <h2>Admin Panel</h2>
+  <a href="manage plants.html">🌱 Manage Plants</a>
+  <a href="stock.html">📦 Stock</a>
+  <a href="users.html">👤 Users</a>
+  <a href="orders.html">🧾 Orders</a>
+  <a href="reports.html">📊 Reports</a>
+  <a href="index.html">🚪 Logout</a>
+</div>
+
+<!-- ===== MAIN ===== -->
+<div class="main">
+  <h1>Welcome Admin 👋</h1>
+  <p>Plant Store Management System</p>
+
+  <div class="cards">
+    <div class="card">
+      Total Plants <br>
+      <span id="plantCount">0</span>
+    </div>
+
+    <div class="card">
+      Total Users <br>
+      <span id="userCount">0</span>
+    </div>
+
+    <div class="card">
+      Orders <br>
+      <span id="orderCount">0</span>
+    </div>
+
+    <div class="card">
+      Revenue <br>
+      ₹<span id="revenue">0</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCRIPT (AUTOMATIC DATA) ===== -->
+<script>
+// Plants
+let plants = JSON.parse(localStorage.getItem("plants")) || [];
+document.getElementById("plantCount").innerText = plants.length;
+
+// Users
+let users = JSON.parse(localStorage.getItem("users")) || [];
+document.getElementById("userCount").innerText = users.length;
+
+// Orders
+let orders = JSON.parse(localStorage.getItem("orders")) || [];
+document.getElementById("orderCount").innerText = orders.length;
+
+// Revenue calculation
+let totalRevenue = 0;
+orders.forEach(o => {
+  totalRevenue += Number(o.total || 0);
+});
+document.getElementById("revenue").innerText = totalRevenue;
+</script>
+
+</body>
+</html>

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Manage Plants</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  margin:0;
+  font-family:Arial;
+  background:
+    linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)),
+    url("r.jpeg");
+  background-size:cover;
+  background-position:center;
+  background-attachment:fixed;
+}
+
+.container{
+  max-width:1000px;
+  margin:30px auto;
+  background:rgba(255,255,255,0.95);
+  padding:20px;
+  border-radius:10px;
+}
+
+h2{
+  text-align:center;
+  color:#2e7d32;
+}
+
+input, select, button{
+  width:100%;
+  padding:10px;
+  margin:8px 0;
+  font-size:16px;
+}
+
+button{
+  background:#2e7d32;
+  color:white;
+  border:none;
+  cursor:pointer;
+}
+
+button:hover{
+  background:#1b5e20;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:20px;
+}
+
+table, th, td{
+  border:1px solid #ccc;
+}
+
+th, td{
+  padding:10px;
+  text-align:center;
+}
+
+img{
+  width:60px;
+  height:60px;
+  object-fit:cover;
+  border-radius:5px;
+}
+
+.action-btn{
+  padding:5px 10px;
+  margin:2px;
+  font-size:14px;
+  color:white;
+  border:none;
+  cursor:pointer;
+}
+
+.edit{
+  background:#1976d2;
+}
+
+.delete{
+  background:#d32f2f;
+}
+
+.back{
+  background:#555;
+  margin-top:15px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h2>🌱 Manage Plants</h2>
+
+  <input type="hidden" id="editIndex">
+
+  <input type="text" id="name" placeholder="Plant Name">
+
+  <select id="category">
+    <option value="">Select Category</option>
+    <option>Indoor</option>
+    <option>Outdoor</option>
+    <option>Medicinal</option>
+    <option>Flowering</option>
+  </select>
+
+  <input type="number" id="stock" placeholder="Stock Quantity">
+  <input type="number" id="price" placeholder="Price">
+
+  <!-- IMAGE UPLOAD -->
+  <input type="file" id="image" accept="image/*">
+
+  <button onclick="savePlant()">Save Plant</button>
+
+  <!-- TABLE -->
+  <table>
+    <thead>
+      <tr>
+        <th>Image</th>
+        <th>Name</th>
+        <th>Category</th>
+        <th>Stock</th>
+        <th>Price (₹)</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="plantTable"></tbody>
+  </table>
+
+  <button class="back" onclick="location.href='admin dashboard.html'">
+    ⬅ Back to Dashboard
+  </button>
+</div>
+
+<script>
+
+let plants = JSON.parse(localStorage.getItem("plants")) || [];
+
+function displayPlants(){
+  let table = document.getElementById("plantTable");
+  table.innerHTML = "";
+
+  plants.forEach((p, i) => {
+    table.innerHTML += `
+      <tr>
+        <td><img src="${p.image}"></td>
+        <td>${p.name}</td>
+        <td>${p.category}</td>
+        <td>${p.stock}</td>
+        <td>${p.price}</td>
+        <td>
+          <button class="action-btn edit" onclick="editPlant(${i})">Edit</button>
+          <button class="action-btn delete" onclick="deletePlant(${i})">Delete</button>
+        </td>
+      </tr>
+    `;
+  });
+}
+
+function savePlant(){
+  let name = document.getElementById("name").value;
+  let category = document.getElementById("category").value;
+  let stock = document.getElementById("stock").value;
+  let price = document.getElementById("price").value;
+  let imageInput = document.getElementById("image");
+  let editIndex = document.getElementById("editIndex").value;
+
+  if(name=="" || category=="" || stock=="" || price==""){
+    alert("Please fill all fields");
+    return;
+  }
+
+  // If editing and no new image selected
+  if(editIndex !== "" && imageInput.files.length === 0){
+    plants[editIndex] = {
+      name,
+      category,
+      stock,
+      price,
+      image: plants[editIndex].image
+    };
+    localStorage.setItem("plants", JSON.stringify(plants));
+    clearForm();
+    displayPlants();
+    return;
+  }
+
+  // If new image selected
+  let reader = new FileReader();
+
+  reader.onload = function(e){
+
+    let imageData = e.target.result;
+
+    let plantData = {
+      name,
+      category,
+      stock,
+      price,
+      image: imageData
+    };
+
+    if(editIndex === ""){
+      plants.push(plantData);
+    }else{
+      plants[editIndex] = plantData;
+      document.getElementById("editIndex").value="";
+    }
+
+    localStorage.setItem("plants", JSON.stringify(plants));
+    clearForm();
+    displayPlants();
+  };
+
+  if(imageInput.files.length > 0){
+    reader.readAsDataURL(imageInput.files[0]);
+  }else{
+    alert("Please select plant image");
+  }
+}
+
+function editPlant(index){
+  let p = plants[index];
+
+  document.getElementById("name").value = p.name;
+  document.getElementById("category").value = p.category;
+  document.getElementById("stock").value = p.stock;
+  document.getElementById("price").value = p.price;
+  document.getElementById("editIndex").value = index;
+}
+
+function deletePlant(index){
+  if(confirm("Delete this plant?")){
+    plants.splice(index,1);
+    localStorage.setItem("plants", JSON.stringify(plants));
+    displayPlants();
+  }
+}
+
+function clearForm(){
+  document.getElementById("name").value="";
+  document.getElementById("category").value="";
+  document.getElementById("stock").value="";
+  document.getElementById("price").value="";
+  document.getElementById("image").value="";
+  document.getElementById("editIndex").value="";
+}
+
+displayPlants();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Cart - Plant Store</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+
+body{
+margin:0;
+font-family:Arial;
+background:
+linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)),
+url("https://images.unsplash.com/photo-1466692476868-aef1dfb1e735");
+background-size:cover;
+background-position:center;
+background-attachment:fixed;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+width:220px;
+height:100vh;
+background:#2e7d32;
+position:fixed;
+color:white;
+}
+
+.sidebar h2{
+text-align:center;
+padding:15px;
+margin:0;
+border-bottom:1px solid #fff;
+}
+
+.sidebar a{
+display:block;
+padding:15px;
+color:white;
+text-decoration:none;
+}
+
+.sidebar a:hover{
+background:#1b5e20;
+}
+
+/* MAIN */
+
+.main{
+margin-left:220px;
+padding:20px;
+min-height:100vh;
+background:rgba(255,255,255,0.95);
+}
+
+h1{
+color:#2e7d32;
+}
+
+/* TABLE */
+
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:20px;
+}
+
+th, td{
+border:1px solid #ccc;
+padding:10px;
+text-align:center;
+}
+
+th{
+background:#2e7d32;
+color:white;
+}
+
+img{
+width:60px;
+height:60px;
+border-radius:8px;
+object-fit:cover;
+}
+
+input{
+width:60px;
+padding:5px;
+}
+
+button{
+padding:8px 12px;
+border:none;
+cursor:pointer;
+border-radius:5px;
+}
+
+.remove{
+background:#d32f2f;
+color:white;
+}
+
+.place{
+background:#2e7d32;
+color:white;
+margin-top:15px;
+}
+
+.back{
+background:#555;
+color:white;
+margin-top:15px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="sidebar">
+<h2>User Panel</h2>
+<a href="user dashboard.html">🏠 Home</a>
+<a href="cart.html">🛒 Cart</a>
+<a href="my orders.html">🧾 My Orders</a>
+<a href="user login.html">🚪 Logout</a>
+</div>
+
+<div class="main">
+
+<h1>🛒 My Cart</h1>
+
+<table>
+
+<thead>
+<tr>
+<th>Image</th>
+<th>Plant Name</th>
+<th>Price (₹)</th>
+<th>Quantity</th>
+<th>Total (₹)</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<tbody id="cartTable"></tbody>
+
+</table>
+
+<h2>Total Amount : ₹<span id="grandTotal">0</span></h2>
+
+<button class="place" onclick="placeOrder()">Place Order</button>
+<button class="back" onclick="location.href='user dashboard.html'">⬅ Back</button>
+
+</div>
+
+<script>
+
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+let table = document.getElementById("cartTable");
+
+function loadCart(){
+
+table.innerHTML="";
+let grandTotal=0;
+
+if(cart.length===0){
+table.innerHTML="<tr><td colspan='6'>Cart is empty</td></tr>";
+document.getElementById("grandTotal").innerText=0;
+return;
+}
+
+cart.forEach((c,i)=>{
+
+let qty=c.qty||1;
+let total=c.price*qty;
+grandTotal+=total;
+
+table.innerHTML+=`
+
+<tr>
+
+<td>
+<img src="${c.image}" alt="plant">
+</td>
+
+<td>${c.name}</td>
+
+<td>${c.price}</td>
+
+<td>
+<input type="number" min="1" value="${qty}"
+onchange="updateQty(${i}, this.value)">
+</td>
+
+<td>${total}</td>
+
+<td>
+<button class="remove" onclick="removeItem(${i})">Remove</button>
+</td>
+
+</tr>
+
+`;
+
+});
+
+document.getElementById("grandTotal").innerText=grandTotal;
+
+}
+
+function updateQty(index,qty){
+
+if(qty<1) qty=1;
+
+cart[index].qty=Number(qty);
+
+localStorage.setItem("cart",JSON.stringify(cart));
+
+loadCart();
+
+}
+
+function removeItem(index){
+
+cart.splice(index,1);
+
+localStorage.setItem("cart",JSON.stringify(cart));
+
+loadCart();
+
+}
+
+function placeOrder(){
+
+if(cart.length===0){
+alert("Cart is empty");
+return;
+}
+
+let username=localStorage.getItem("username");
+
+let orders=JSON.parse(localStorage.getItem("orders"))||[];
+
+cart.forEach(c=>{
+
+orders.push({
+
+user:username,
+name:c.name,
+image:c.image,
+qty:c.qty||1,
+total:c.price*(c.qty||1),
+status:"Pending"
+
+});
+
+});
+
+localStorage.setItem("orders",JSON.stringify(orders));
+
+localStorage.removeItem("cart");
+
+alert("Order placed successfully 🌱");
+
+location.href="my orders.html";
+
+}
+
+loadCart();
+
+</script>
+
+</body>
+</html>

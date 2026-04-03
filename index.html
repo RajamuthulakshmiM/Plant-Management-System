@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Plant Store</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+
+body{
+margin:0;
+font-family:Arial;
+background:#f4f4f4;
+}
+
+/* NAVBAR */
+
+nav{
+background:linear-gradient(90deg,#0f9b0f,#38ef7d);
+color:white;
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:12px 18px;
+}
+
+nav a{
+color:white;
+text-decoration:none;
+margin:0 10px;
+font-weight:bold;
+}
+
+/* HERO */
+
+.hero{
+background:linear-gradient(rgba(0,0,0,.5),rgba(0,0,0,.5)), url('r.jpeg');
+background-size:cover;
+background-position:center;
+color:white;
+padding:100px 20px;
+text-align:center;
+position:relative;
+overflow:hidden;
+}
+
+/* OVAL ROTATE CONTAINER */
+
+.rotate-home{
+position:relative;
+width:500px;
+height:250px;
+margin:30px auto;
+animation:spin 18s linear infinite;
+}
+
+/* PLANT IMAGE */
+
+.rotate-home img{
+position:absolute;
+width:90px;
+height:90px;
+border-radius:50%;
+object-fit:cover;
+border:3px solid white;
+}
+
+/* OVAL POSITIONS */
+
+.rotate-home img:nth-child(1){
+top:0;
+left:200px;
+}
+
+.rotate-home img:nth-child(2){
+top:80px;
+right:0;
+}
+
+.rotate-home img:nth-child(3){
+bottom:0;
+left:200px;
+}
+
+.rotate-home img:nth-child(4){
+top:80px;
+left:0;
+}
+
+/* ROTATION */
+
+@keyframes spin{
+0%{transform:rotate(0deg);}
+100%{transform:rotate(360deg);}
+}
+
+/* SECTION */
+
+.section{
+padding:25px;
+}
+
+.section h2{
+text-align:center;
+margin-bottom:20px;
+}
+
+/* CARDS */
+
+.cards{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:18px;
+}
+
+.card{
+background:white;
+padding:15px;
+border-radius:12px;
+text-align:center;
+box-shadow:0 4px 10px rgba(0,0,0,.2);
+cursor:pointer;
+}
+
+.card img{
+width:100%;
+height:160px;
+object-fit:cover;
+border-radius:10px;
+}
+
+.price{
+color:green;
+font-weight:bold;
+}
+
+/* MODAL */
+
+.modal{
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,.6);
+}
+
+.modal-content{
+background:white;
+width:300px;
+margin:120px auto;
+padding:20px;
+border-radius:12px;
+text-align:center;
+}
+
+button{
+padding:8px 16px;
+margin:6px;
+background:green;
+color:white;
+border:none;
+border-radius:6px;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+
+<nav>
+<div>🌱 Green Plant Store</div>
+<div>
+<a href="#">Home</a>
+<a href="#offers">Offers</a>
+<a href="#" onclick="openLogin()">Login</a>
+<a href="#" onclick="openRegister()">Register</a>
+</div>
+</nav>
+
+<!-- HERO -->
+
+<div class="hero">
+
+<h1>Bring Nature Into Your Home</h1>
+<p>Fresh • Healthy • Flowering Plants</p>
+
+<!-- OVAL ROTATE PLANTS -->
+
+<div class="rotate-home">
+
+<img src="l.jpeg">
+<img src="j.jpeg">
+<img src="h.jpeg">
+<img src="l.jpeg">
+
+</div>
+
+<button onclick="openLogin()">Login Now</button>
+
+</div>
+
+<!-- OFFERS -->
+
+<div id="offers" class="section">
+
+<h2>🌸 Offer Flower Plants</h2>
+
+<div class="cards">
+
+<div class="card" onclick="goDashboard()">
+<img src="l.jpeg">
+<h4>Rose Plant</h4>
+<p class="price">₹199</p>
+</div>
+
+<div class="card" onclick="goDashboard()">
+<img src="j.jpeg">
+<h4>Jasmine Plant</h4>
+<p class="price">₹149</p>
+</div>
+
+<div class="card" onclick="goDashboard()">
+<img src="h.jpeg">
+<h4>Hibiscus Plant</h4>
+<p class="price">₹179</p>
+</div>
+
+<div class="card" onclick="goDashboard()">
+<img src="l.jpeg">
+<h4>Lily Plant</h4>
+<p class="price">₹189</p>
+</div>
+
+</div>
+
+</div>
+
+<!-- LOGIN MODAL -->
+
+<div class="modal" id="loginModal">
+<div class="modal-content">
+<h3>Login As</h3>
+<button onclick="location.href='admin login.html'">Admin</button>
+<button onclick="location.href='login.html'">User</button>
+<br><br>
+<button onclick="closeAll()" style="background:gray">Close</button>
+</div>
+</div>
+
+<!-- REGISTER MODAL -->
+
+<div class="modal" id="registerModal">
+<div class="modal-content">
+<h3>User Registration</h3>
+<button onclick="location.href='register.html'">Register</button>
+<br><br>
+<button onclick="closeAll()" style="background:gray">Close</button>
+</div>
+</div>
+
+<script>
+
+function openLogin(){
+closeAll();
+document.getElementById("loginModal").style.display="block";
+}
+
+function openRegister(){
+closeAll();
+document.getElementById("registerModal").style.display="block";
+}
+
+function closeAll(){
+document.getElementById("loginModal").style.display="none";
+document.getElementById("registerModal").style.display="none";
+}
+
+function goDashboard(){
+window.location.href="user dashboard.html";
+}
+
+</script>
+
+</body>
+</html>
